@@ -1,0 +1,41 @@
+"""
+HTTP Status Codes Utility Class
+Using FastAPI's built-in status module for consistency
+"""
+from fastapi import status
+
+
+class HTTPStatus:
+    """
+    Centralized HTTP status codes class.
+    Uses FastAPI's status module for standard HTTP status codes.
+    """
+    # Success codes (2xx)
+    OK = status.HTTP_200_OK
+    CREATED = status.HTTP_201_CREATED
+    ACCEPTED = status.HTTP_202_ACCEPTED
+    NO_CONTENT = status.HTTP_204_NO_CONTENT
+    # Redirection codes (3xx)
+    MOVED_PERMANENTLY = status.HTTP_301_MOVED_PERMANENTLY
+    FOUND = status.HTTP_302_FOUND
+    NOT_MODIFIED = status.HTTP_304_NOT_MODIFIED
+    # Client error codes (4xx)
+    BAD_REQUEST = status.HTTP_400_BAD_REQUEST
+    UNAUTHORIZED = status.HTTP_401_UNAUTHORIZED
+    FORBIDDEN = status.HTTP_403_FORBIDDEN
+    NOT_FOUND = status.HTTP_404_NOT_FOUND
+    METHOD_NOT_ALLOWED = status.HTTP_405_METHOD_NOT_ALLOWED
+    NOT_ACCEPTABLE = status.HTTP_406_NOT_ACCEPTABLE
+    REQUEST_TIMEOUT = status.HTTP_408_REQUEST_TIMEOUT
+    CONFLICT = status.HTTP_409_CONFLICT
+    GONE = status.HTTP_410_GONE
+    PAYLOAD_TOO_LARGE = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+    UNSUPPORTED_MEDIA_TYPE = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+    UNPROCESSABLE_ENTITY = status.HTTP_422_UNPROCESSABLE_ENTITY
+    TOO_MANY_REQUESTS = status.HTTP_429_TOO_MANY_REQUESTS
+    # Server error codes (5xx)
+    INTERNAL_SERVER_ERROR = status.HTTP_500_INTERNAL_SERVER_ERROR
+    NOT_IMPLEMENTED = status.HTTP_501_NOT_IMPLEMENTED
+    BAD_GATEWAY = status.HTTP_502_BAD_GATEWAY
+    SERVICE_UNAVAILABLE = status.HTTP_503_SERVICE_UNAVAILABLE
+    GATEWAY_TIMEOUT = status.HTTP_504_GATEWAY_TIMEOUT
