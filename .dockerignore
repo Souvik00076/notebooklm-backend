@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment
+.env.example
+
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Alembic (keep alembic.ini but ignore versions if needed)
+# alembic/versions/
+
+# Documentation
+README.md
+*.md
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Alpine)
+  postgres:
+    image: postgres:alpine
+    container_name: notebook-lm-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-notebooklm}
+    volumes:
+      # Named volume for persistent data
+      - notebook-lm-pg-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ChromaDB
+  chromadb:
+    image: chromadb/chroma:1.5.1.dev55
+    container_name: notebook-lm-chroma
+    volumes:
+      # Named volume for persistent data
+      - chroma-data:/chroma/chroma
+    ports:
+      - "8001:8000"
+    networks:
+      - db
+    restart: unless-stopped
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=${ANONYMIZED_TELEMETRY:-TRUE}
+
+  # FastAPI Backend
+  notebook-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notebook-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Bind mounts for hot-reload
+      - ./app:/app/app
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Database connection
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/notebooklm}
+      - CHROMA_URL=${CHROMA_URL:-http://chromadb:8000}
+    networks:
+      - db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      chromadb:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Named volumes for data persistence
+volumes:
+  notebook-lm-pg-data:
+    external: true
+  chroma-data:
+    external: true
+
+# Networks
+networks:
+  db:
+    driver: bridge
