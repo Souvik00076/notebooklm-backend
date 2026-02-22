@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # PostgreSQL Database (Alpine)
   postgres:
-    image: postgres:alpine
+    image: postgres:17-alpine
     container_name: notebook-lm-postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -75,9 +75,7 @@ services:
 # Named volumes for data persistence
 volumes:
   notebook-lm-pg-data:
-    external: true
   chroma-data:
-    external: true
 
 # Networks
 networks:

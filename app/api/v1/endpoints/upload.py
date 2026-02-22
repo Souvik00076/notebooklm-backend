@@ -6,6 +6,7 @@ from fastapi import APIRouter, File, UploadFile, HTTPException
 
 from app.utils.http_status import HTTPStatus
 from app.schemas.upload import UploadResponse
+from app.rag.RagFacade import RagFacade
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
@@ -52,8 +53,10 @@ async def upload_file(
     if file_size > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=HTTPStatus.PAYLOAD_TOO_LARGE,
-            detail=f"File size ({file_size} bytes) exceeds maximum allowed size of {
-                MAX_FILE_SIZE} bytes (1MB)"
+            detail=(
+                f"File size ({file_size} bytes) exceeds maximum allowed size of "
+                f"{MAX_FILE_SIZE} bytes (1MB)"
+            )
         )
 
     # Generate unique filename to avoid conflicts
@@ -70,7 +73,7 @@ async def upload_file(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             detail=f"Failed to save file: {str(e)}"
         )
-
+    RagFacade.ingest(file_path)
     # Prepare response
     upload_response = UploadResponse(
         filename=unique_filename,
